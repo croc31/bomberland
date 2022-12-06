@@ -28,6 +28,7 @@ std::string Agent::enemy_agent_id;
 std::vector<std::string> Agent::enemy_units;
 std::vector<std::vector<std::string>> Agent::map;
 
+int maxX = 0, maxY = 0;
 int Agent::tick;
 
 void Agent::run() 
@@ -50,7 +51,7 @@ void Agent::on_game_tick(int tick_nr, const json& game_state)
   DEBUG("*************** on_game_tick");
   DEBUG(game_state.dump());
   TEST(tick_nr, game_state.dump());
-  
+  std::vector<std::string> entities;
   tick = tick_nr;
   std::cout << "Tick #" << tick << std::endl;
   if (tick == 1)
@@ -61,7 +62,22 @@ void Agent::on_game_tick(int tick_nr, const json& game_state)
     enemy_units = game_state["agents"][enemy_agent_id]["unit_ids"].get<std::vector<std::string>>();
   }
 
-  //
+  //mapeando o jogo
+  maxX = game_state["world"]["width"];
+  maxY = game_state["world"]["height"];
+  entities = game_state["entities"].get<std::vector<std::string>>();
+  for (size_t i = 0; i < maxX; i++)
+  {
+    for (size_t j = 0; j < maxY; j++)
+    {
+      map[i][j] = "0";
+    }
+  }
+  
+  for( const auto entity_string: entities){
+    const json& entity = entity_string;
+    map[entity["x"]][entity["y"]];
+  }
 
   srand(1234567 * (my_agent_id == "a" ? 1 : 0) + tick * 100 + 13);
   // srand(1234567 * (enemy_agent_id == "a" ? 1 : 0) + tick * 100 + 13);
