@@ -44,6 +44,7 @@ class Support {
  public:
   float manhattanDistance(Coordinates start, Coordinates target);
   bool containsInPriorityQueue(Node node, priority_queue<Node, vector<Node>, Compare> priorityQueue);
+  bool containsInVector(Node node, vector<Node> vector);
 };
 
 struct Compare {

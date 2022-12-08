@@ -1,5 +1,4 @@
 #include "aStar.hpp"
-using namespace std;
 
 vector<Node> AStar::aStar(Node start, Node target) {
   Support support;
@@ -19,26 +18,21 @@ vector<Node> AStar::aStar(Node start, Node target) {
     if (start.coordinates.isEqual(target.coordinates)) {
       return vector<Node>{};
     }
-    // TO DO - adicionar os vizinhos (implementar metodo addNeighbors() verificando quais vizinhos disponiveis e adicionar) 
+    // TO DO - adicionar os vizinhos (implementar metodo addNeighbors() verificando quais vizinhos disponiveis e adicionar)
     node.addNeighbors();
 
-    for (auto neighbor : node.neighbors) {
+    for (Node neighbor : node.neighbors) {
       Node* parent = new Node(node.h, node.g, node.f, node.coordinates, node.parent);
-
-      Node node;
-      node.parent = parent;
-      node.coordinates = neighbor.coordinates;
-      node.g = parent->g + 1;
-      node.h = node.calculateHeuristic(target);
-      node.f = node.g + node.h;
-
-      if (!support.containsInPriorityQueue(node, openList)) {
-        openList.push(node);
+      Node n = neighbor;
+      if (!support.containsInPriorityQueue(n, openList) && !support.containsInVector(n, closedList)) {
+        n.parent = parent;
+        n.g = parent->g + 1;
+        n.h = n.calculateHeuristic(target);
+        n.f = n.g + n.h;
+        openList.push(n);
       }
-
-      closedList.push_back(node);
-      
     }
+    closedList.push_back(node);
   }
 
   return vector<Node>{};

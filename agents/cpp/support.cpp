@@ -21,9 +21,16 @@ bool Support::containsInPriorityQueue(Node node, priority_queue<Node, vector<Nod
   while (!priorityQueue.empty()) {
     Node n = priorityQueue.top();
     priorityQueue.pop();
-    if (n.coordinates.x == node.coordinates.x && n.coordinates.y == node.coordinates.y) {
+    if (n.coordinates.isEqual(node.coordinates))
       return true;
     }
+  return false;
+}
+
+bool Support::containsInVector(Node node, vector<Node> vector) {
+  for (int i = 0; i < vector.size(); i++) {
+    if (vector[i].coordinates.isEqual(node.coordinates))
+      return true;
   }
   return false;
 }
