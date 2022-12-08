@@ -15,8 +15,8 @@ vector<Node> AStar::aStar(Node start, Node target) {
     Node node = openList.top();
     openList.pop();
 
-    if (start.coordinates.isEqual(target.coordinates)) {
-      return vector<Node>{};
+    if (node.coordinates.isEqual(target.coordinates)) {
+      return getPath(node);
     }
     // TO DO - adicionar os vizinhos (implementar metodo addNeighbors() verificando quais vizinhos disponiveis e adicionar)
     node.addNeighbors();
@@ -36,4 +36,13 @@ vector<Node> AStar::aStar(Node start, Node target) {
   }
 
   return vector<Node>{};
+}
+
+vector<Node> AStar::getPath(Node node) {
+  vector<Node> vectorPath;
+  while (node.parent != nullptr) {
+    vectorPath.push_back(node);
+    node = *(node.parent);
+  }
+  return vectorPath;
 }

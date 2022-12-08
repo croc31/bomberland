@@ -10,12 +10,12 @@ using namespace std;
 
 struct Node {
  public:
-  float g = 0;
-  float f = MAX_INT;
-  float h = MAX_INT;
+  int g = 0;
+  int f = MAX_INT;
+  int h = MAX_INT;
   Coordinates coordinates;
   Node* parent = nullptr;
-  vector<Node> neighbors;
+  vector<Node> neighbors{};
   Node(){};
   Node(int h, int g, int f, Coordinates coordinates, Node* parent) {
     this->h = h;
@@ -24,7 +24,7 @@ struct Node {
     this->coordinates = coordinates;
     this->parent = parent;
   };
-  float calculateHeuristic(Node target);
+  int calculateHeuristic(Node target);
   void addNeighbors();
 };
 
@@ -42,7 +42,7 @@ class Coordinates {
 
 class Support {
  public:
-  float manhattanDistance(Coordinates start, Coordinates target);
+  int manhattanDistance(Coordinates start, Coordinates target);
   bool containsInPriorityQueue(Node node, priority_queue<Node, vector<Node>, Compare> priorityQueue);
   bool containsInVector(Node node, vector<Node> vector);
 };
