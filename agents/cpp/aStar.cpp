@@ -1,6 +1,6 @@
 #include "aStar.hpp"
 
-vector<Node> AStar::aStar(Node start, Node target) {
+vector<Node> AStar::aStar(Node start, Node target, int maxX, int maxY, json map) {
   Support support;
 
   priority_queue<Node, vector<Node>, Compare> openList;
@@ -18,8 +18,8 @@ vector<Node> AStar::aStar(Node start, Node target) {
     if (node.coordinates.isEqual(target.coordinates)) {
       return getPath(node);
     }
-    // TO DO - adicionar os vizinhos (implementar metodo addNeighbors() verificando quais vizinhos disponiveis e adicionar)
-    node.addNeighbors();
+
+    node.addNeighbors(maxX, maxY, map);
 
     for (Node neighbor : node.neighbors) {
       Node* parent = new Node(node.h, node.g, node.f, node.coordinates, node.parent);

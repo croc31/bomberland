@@ -7,6 +7,8 @@
 #include <queue>
 #include <vector>
 using namespace std;
+#include "nlohmann/json.hpp"
+using nlohmann::json;
 
 struct Node {
  public:
@@ -25,7 +27,8 @@ struct Node {
     this->parent = parent;
   };
   int calculateHeuristic(Node target);
-  void addNeighbors();
+  void addNeighbors(int maxX, int maxY, json map);
+  vector<Node> removeUnavailableNeighbors(json map, vector<Node> neighbors);
 };
 
 class Coordinates {
@@ -45,6 +48,9 @@ class Support {
   int manhattanDistance(Coordinates start, Coordinates target);
   bool containsInPriorityQueue(Node node, priority_queue<Node, vector<Node>, Compare> priorityQueue);
   bool containsInVector(Node node, vector<Node> vector);
+  bool isInBounds(Coordinates point, int maxX, int maxY);
+  bool isOccupied(json entitiesJson, Coordinates point);
+  json entityAt(json entitiesJson, Coordinates point);
 };
 
 struct Compare {
