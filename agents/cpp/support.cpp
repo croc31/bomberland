@@ -89,3 +89,35 @@ json Support::entityAt(json entitiesJson, Coordinates point) {
   }
   return entityAtPoint;
 }
+
+Coordinates Support::getFreeCoordinates(Coordinates start, int maxX, int maxY, json entitiesJson) {
+  if (isInBounds(start, maxX, maxY) && !isOccupied(entitiesJson, start)) {
+    return start;
+  } else {
+    Coordinates random = getRandomMove(start);
+    for (int i = 0; i < 10; i++) {
+      if (isInBounds(random, maxX, maxY) && !isOccupied(entitiesJson, random)) {
+        return random;
+      } else {
+        random = getRandomMove(start);
+      }
+    }
+  }
+}
+
+Coordinates Support::getRandomMove(Coordinates start) {
+  Coordinates north;
+  north.x = start.x;
+  north.y = start.y + 1;
+  Coordinates south;
+  south.x = start.x;
+  south.y = start.y - 1;
+  Coordinates east;
+  east.x = start.x + 1;
+  east.y = start.y;
+  Coordinates west;
+  west.x = start.x - 1;
+  west.y = start.y;
+  const vector<Coordinates> actions = {north, south, east, west};
+  return actions[rand() % actions.size()];
+}
