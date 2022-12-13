@@ -82,7 +82,7 @@ bool Support::isOccupied(json entitiesJson, Coordinates point) {
 json Support::entityAt(json entitiesJson, Coordinates point) {
   json entityAtPoint;
   for (auto it = entitiesJson.begin(); it != entitiesJson.end(); ++it) {
-    if (((*it)["x"].get<int>() == point.x && (*it)["y"].get<int>() == point.y) && (*it)["type"].get<string>() != "a") {
+    if (((*it)["x"].get<int>() == point.x && (*it)["y"].get<int>() == point.y) && (*it)["type"].get<string>() != "m" && (*it)["type"].get<string>() != "x") {
       entityAtPoint = (*it);
       break;
     }

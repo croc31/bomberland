@@ -10,11 +10,24 @@ using namespace std;
 #include "nlohmann/json.hpp"
 using nlohmann::json;
 
+class Coordinates {
+ public:
+  int x = MAX_INT;
+  int y = MAX_INT;
+  Coordinates(){};
+  Coordinates(int x, int y) {
+    this->x = x;
+    this->y = y;
+  };
+  bool isEqual(Coordinates point);
+};
+
 struct Node {
  public:
   int g = 0;
   int f = MAX_INT;
   int h = MAX_INT;
+  char type;
   Coordinates coordinates;
   Node* parent = nullptr;
   vector<Node> neighbors{};
@@ -31,18 +44,11 @@ struct Node {
   vector<Node> removeUnavailableNeighbors(json map, vector<Node> neighbors);
 };
 
-class Coordinates {
- public:
-  int x;
-  int y;
-  Coordinates(){};
-  Coordinates(int x, int y) {
-    this->x = x;
-    this->y = y;
-  };
-  bool isEqual(Coordinates point);
+struct Compare {
+  bool operator()(const Node& n1, const Node& n2) {
+    return n1.f > n2.f;
+  }
 };
-
 class Support {
  public:
   int manhattanDistance(Coordinates start, Coordinates target);
@@ -53,10 +59,5 @@ class Support {
   json entityAt(json entitiesJson, Coordinates point);
 };
 
-struct Compare {
-  bool operator()(const Node& n1, const Node& n2) {
-    return n1.f > n2.f;
-  }
-};
 
 #endif
