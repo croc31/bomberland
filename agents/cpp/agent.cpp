@@ -13,7 +13,7 @@ const std::vector<std::string> _actions = {"up", "left", "right", "down", "bomb"
 // verificar o vortice
 // se inimigo perto, solta bomba
 // fugir de bomba
-//  parar fugir se estiver longe do inimigo
+// parar fugir se estiver longe do inimigo
 class Agent {
  private:
   static std::string my_agent_id;
@@ -89,7 +89,7 @@ void Agent::on_game_tick(int tick_nr, const json& game_state) {
     enemy_node.coordinates.y = enemy["coordinates"][1];
     Node seek_node;
     // verificando se o inimigo esta perto
-    if (support.manhattanDistance(agent_node.coordinates, enemy_node.coordinates) <= 3) {
+    if (support.manhattanDistance(agent_node.coordinates, enemy_node.coordinates) <= 5) {
       // falta soltar bomba
       Coordinates seek_coordianates;
       seek_coordianates.x = agent_node.coordinates.x - (enemy_node.coordinates.x - agent_node.coordinates.x);
@@ -97,8 +97,14 @@ void Agent::on_game_tick(int tick_nr, const json& game_state) {
 
       seek_node.coordinates = support.getFreeCoordinates(seek_coordianates, maxX, maxY, entities);
     } else {
-      // por enquanto fica parado
-      seek_node.coordinates = agent_node.coordinates;
+      // vai pra um ponto aleatorio
+      seek_node.coordinates = support.getRandomMove(agent_node.coordinates);
+    }
+
+    // vortex
+    if (tick == 200) {
+      maxX--;
+      maxY--;
     }
 
     // calculando caminho A*
