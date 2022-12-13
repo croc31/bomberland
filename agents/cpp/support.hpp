@@ -27,7 +27,6 @@ struct Node {
   int g = 0;
   int f = MAX_INT;
   int h = MAX_INT;
-  char type;
   Coordinates coordinates;
   Node* parent = nullptr;
   vector<Node> neighbors{};
@@ -57,7 +56,8 @@ class Support {
   bool isInBounds(Coordinates point, int maxX, int maxY);
   bool isOccupied(json entitiesJson, Coordinates point);
   json entityAt(json entitiesJson, Coordinates point);
+  Coordinates getFreeCoordinates(Coordinates start, int maxX, int maxY, json entitiesJson);
+  Coordinates getRandomMove(Coordinates start);
 };
-
 
 #endif
