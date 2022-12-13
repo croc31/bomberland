@@ -2,16 +2,16 @@ CC=gcc
 CXX=g++
 RM=rm -f
 CPPFLAGS=-std=c++11
-LDFLAGS=
+LDFLAGS= -Wall
 LDLIBS=
 
-SRCS=agent.cpp game_state.cpp easywsclient/easywsclient.cpp
+SRCS=agent.cpp game_state.cpp easywsclient/easywsclient.cpp aStar.cpp support.cpp
 
 OBJS=$(subst .cpp,.o,$(SRCS))
 
 all: agent
 
-agent: $(OBJS)
+agent: $(OBJS) 
 	$(CXX) $(LDFLAGS) -o agent $(OBJS) $(LDLIBS)
 
 depend: .depend
