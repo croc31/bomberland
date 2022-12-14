@@ -40,6 +40,10 @@ AStar estrela;
 
 const int tickCountDownCONST = 5;
 int tickCountDown = tickCountDownCONST;
+
+int bombCountDown = 0;
+Coordinates bombCoordenadas;
+
 int maxX = 0, maxY = 0;
 int Agent::tick;
 
@@ -94,18 +98,82 @@ void Agent::on_game_tick(int tick_nr, const json& game_state) {
     enemy_node.coordinates.x = enemy["coordinates"][0];
     enemy_node.coordinates.y = enemy["coordinates"][1];
     Node seek_node;
+    //vetor de todas as bombas
+    vector<Coordinates> bombas = support.getBombs(entities);
+    //bomba mais próxima
+    Coordinates bombaProxima = support.getFirstBomb(bombas, agent_node.coordinates);
 
+    //fugindo da minha bomba
+    if(bombCountDown > 0){
+      cout << "bomb fuga" << endl;
+      --bombCountDown;
+      if (bombCountDown == 3)
+      {//depois de fugir da bomba, ele a detona
+        action = "detonate";
+      }else{
+      
+        // seta o caminho de fuga da bomba
+        Coordinates seek_coordianates;
+        seek_coordianates.x = agent_node.coordinates.x - (bombCoordenadas.x - agent_node.coordinates.x);
+        seek_coordianates.y = agent_node.coordinates.y - (bombCoordenadas.y - agent_node.coordinates.y);
+
+        seek_node.coordinates = support.getFreeCoordinates(seek_coordianates, maxX, maxY, entities);
+        //calcula o caminho com o a estrela 
+        caminhoAStar = estrela.aStar(agent_node, seek_node, maxX, maxY, entities);
+        
+        //seta o passo para o próximo passo no caminho A*
+        if (caminhoAStar.size() > 0) {
+        passo = caminhoAStar.back();
+        caminhoAStar.pop_back();
+      }
+      }
+    }else if(
+       support.manhattanDistance(agent_node.coordinates, bombaProxima) <= 2){
+        cout << "fuga bomba inimiga" << endl;
+      // seta o caminho de fuga da bomba
+      Coordinates seek_coordianates;
+      seek_coordianates.x = agent_node.coordinates.x - (bombaProxima.x - agent_node.coordinates.x);
+      seek_coordianates.y = agent_node.coordinates.y - (bombaProxima.y - agent_node.coordinates.y);
+
+      seek_node.coordinates = support.getFreeCoordinates(seek_coordianates, maxX, maxY, entities);
+      //calcula o caminho com o a estrela 
+      caminhoAStar = estrela.aStar(agent_node, seek_node, maxX, maxY, entities);
+      
+      //seta o passo para o próximo passo no caminho A*
+      if (caminhoAStar.size() > 0) {
+        passo = caminhoAStar.back();
+        caminhoAStar.pop_back();
+      }
+    }else if(
+      support.manhattanDistance(agent_node.coordinates, enemy_node.coordinates) >= 5){//se o inimigo estiver muito longe, percigo ele
+      // seta o caminho de perseguição
+      cout << "perseguir" << endl;
+       // vai pra um ponto aleatorio
+      if (tickCountDown == 5) {
+        caminhoAStar = estrela.aStar(agent_node, enemy_node, maxX, maxY, entities);
+        
+        std::cout << " Tick " << std::endl;
+      }
+      //seta o passo para o próximo passo no caminho A*
+      if (caminhoAStar.size() > 0) {
+        std::cout << " Passo " << std::endl;
+        passo = caminhoAStar.back();
+        caminhoAStar.pop_back();
+      }
     // verificando se o inimigo esta perto
-    if (support.manhattanDistance(agent_node.coordinates, enemy_node.coordinates) > 3) {
+    }else if (
+        support.manhattanDistance(agent_node.coordinates, enemy_node.coordinates) > 3 &&
+        support.manhattanDistance(agent_node.coordinates, enemy_node.coordinates) < 5) {
       // seta o caminho de fuga
+      cout << "fuga" << endl;
       Coordinates seek_coordianates;
       seek_coordianates.x = agent_node.coordinates.x - (enemy_node.coordinates.x - agent_node.coordinates.x);
       seek_coordianates.y = agent_node.coordinates.y - (enemy_node.coordinates.y - agent_node.coordinates.y);
 
       seek_node.coordinates = support.getFreeCoordinates(seek_coordianates, maxX, maxY, entities);
-      std::cout << seek_coordianates.x << " : " << seek_coordianates.y << std::endl;
-      std::cout << seek_node.coordinates.x << " : " << seek_node.coordinates.y << std::endl;
-      std::cout << agent_node.coordinates.x << " : " << agent_node.coordinates.y << std::endl;
+      // std::cout << seek_coordianates.x << " : " << seek_coordianates.y << std::endl;
+      // std::cout << seek_node.coordinates.x << " : " << seek_node.coordinates.y << std::endl;
+      // std::cout << agent_node.coordinates.x << " : " << agent_node.coordinates.y << std::endl;
       //calcula o caminho com o a estrela a cada 5 ticks
       if (tickCountDown == 5) {
         caminhoAStar = estrela.aStar(agent_node, seek_node, maxX, maxY, entities);
@@ -118,9 +186,11 @@ void Agent::on_game_tick(int tick_nr, const json& game_state) {
         passo = caminhoAStar.back();
         caminhoAStar.pop_back();
       }
-    } else {//se o inimigo estiver perto, lança bomba
+    } else if (support.manhattanDistance(agent_node.coordinates, enemy_node.coordinates) <= 3){//se o inimigo estiver perto, lança bomba
+      cout << "bomb" << endl;
       action = "bomb";
-      
+      bombCoordenadas = agent_node.coordinates;
+      bombCountDown = 8;
     }
 
     // calculando caminho A*

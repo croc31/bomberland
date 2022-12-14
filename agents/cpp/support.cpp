@@ -135,3 +135,21 @@ Coordinates Support::getRandomMove(Coordinates start) {
   const vector<Coordinates> actions = {north, south, east, west};
   return actions[rand() % actions.size()];
 }
+vector<Coordinates> Support::getBombs(json entities){
+    vector<Coordinates> bombs;
+    for (auto it = entities.begin(); it != entities.end(); ++it) {
+        if ((*it)["type"].get<string>() == "b") {
+            bombs.push_back(Coordinates{ (*it)["x"], (*it)["y"] });
+        }
+    }
+    return bombs;
+}
+Coordinates Support::getFirstBomb(vector<Coordinates> bombs, Coordinates point){
+  Coordinates bomb;
+    for(int i=0; i<bombs.size(); i++){
+      if(manhattanDistance(point, bombs[i]) < manhattanDistance(point, bomb)){
+        bomb = bombs[i];
+      }
+    }
+    return bomb;
+}

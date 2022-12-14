@@ -16,11 +16,6 @@ vector<Node> AStar::aStar(Node start, Node target, int maxX, int maxY, json map)
     openList.pop();
 
     if (node.coordinates.isEqual(target.coordinates)) {
-      std::cout << "aaaaaaaaaaaaaaaaaaaaaa" << endl;
-      std::cout << "aaaaaaaaaaaaaaaaaaaaaa" << endl;
-      std::cout << "aaaaaaaaaaaaaaaaaaaaaa" << endl;
-      std::cout << "aaaaaaaaaaaaaaaaaaaaaa" << endl;
-      std::cout << "aaaaaaaaaaaaaaaaaaaaaa" << endl;
       return getPath(node);
     }
 

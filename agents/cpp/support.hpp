@@ -60,6 +60,8 @@ class Support {
   Coordinates getValidCoordinates(Coordinates start, int maxX, int maxY);
   Coordinates getFreeCoordinates(Coordinates start, int maxX, int maxY, json entitiesJson);
   Coordinates getRandomMove(Coordinates start);
+  vector<Coordinates> getBombs(json entities);
+  Coordinates getFirstBomb(vector<Coordinates> bombs, Coordinates point);
 };
 
 #endif
