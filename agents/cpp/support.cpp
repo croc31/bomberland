@@ -79,10 +79,27 @@ bool Support::isOccupied(json entitiesJson, Coordinates point) {
   return entityAt(entitiesJson, point).size() != 0;
 }
 
+Coordinates Support::getValidCoordinates(Coordinates start, int maxX, int maxY){
+  Coordinates retorno = start;
+  if(start.x < 0 ){
+    retorno.x = 0;
+  }else if(start.x > maxX){ 
+    retorno.x = maxX;
+  }
+
+  if(start.y < 0 ){
+    retorno.y = 0;
+  }else if(start.y > maxY){ 
+    retorno.y = maxY;
+  }
+
+  return retorno;
+}
+
 json Support::entityAt(json entitiesJson, Coordinates point) {
   json entityAtPoint;
   for (auto it = entitiesJson.begin(); it != entitiesJson.end(); ++it) {
-    if (((*it)["x"].get<int>() == point.x && (*it)["y"].get<int>() == point.y) && (*it)["type"].get<string>() != "m" && (*it)["type"].get<string>() != "x") {
+    if (((*it)["x"].get<int>() == point.x && (*it)["y"].get<int>() == point.y) && !((*it)["type"].get<string>() == "m" || (*it)["type"].get<string>() == "x")) {
       entityAtPoint = (*it);
       break;
     }
@@ -95,13 +112,10 @@ Coordinates Support::getFreeCoordinates(Coordinates start, int maxX, int maxY, j
     return start;
   } else {
     Coordinates random = getRandomMove(start);
-    for (int i = 0; i < 10; i++) {
-      if (isInBounds(random, maxX, maxY) && !isOccupied(entitiesJson, random)) {
-        return random;
-      } else {
-        random = getRandomMove(start);
-      }
-    }
+    random.x = random.x % maxX; 
+    random.y = random.y % maxY; 
+    return random;
+    
   }
 }
 
@@ -120,4 +134,22 @@ Coordinates Support::getRandomMove(Coordinates start) {
   west.y = start.y;
   const vector<Coordinates> actions = {north, south, east, west};
   return actions[rand() % actions.size()];
+}
+vector<Coordinates> Support::getBombs(json entities){
+    vector<Coordinates> bombs;
+    for (auto it = entities.begin(); it != entities.end(); ++it) {
+        if ((*it)["type"].get<string>() == "b") {
+            bombs.push_back(Coordinates{ (*it)["x"], (*it)["y"] });
+        }
+    }
+    return bombs;
+}
+Coordinates Support::getFirstBomb(vector<Coordinates> bombs, Coordinates point){
+  Coordinates bomb;
+    for(int i=0; i<bombs.size(); i++){
+      if(manhattanDistance(point, bombs[i]) < manhattanDistance(point, bomb)){
+        bomb = bombs[i];
+      }
+    }
+    return bomb;
 }

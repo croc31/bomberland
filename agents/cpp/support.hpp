@@ -2,6 +2,7 @@
 #define SUPPORT
 #define MAX_INT 99999
 #include <stdlib.h>
+#include <iostream>
 
 #include <cmath>
 #include <queue>
@@ -56,8 +57,11 @@ class Support {
   bool isInBounds(Coordinates point, int maxX, int maxY);
   bool isOccupied(json entitiesJson, Coordinates point);
   json entityAt(json entitiesJson, Coordinates point);
+  Coordinates getValidCoordinates(Coordinates start, int maxX, int maxY);
   Coordinates getFreeCoordinates(Coordinates start, int maxX, int maxY, json entitiesJson);
   Coordinates getRandomMove(Coordinates start);
+  vector<Coordinates> getBombs(json entities);
+  Coordinates getFirstBomb(vector<Coordinates> bombs, Coordinates point);
 };
 
 #endif
