@@ -13,7 +13,7 @@ const std::vector<std::string> _actions = {"up", "left", "right", "down", "bomb"
 // verificar o vortice
 // se inimigo perto, solta bomba
 // fugir de bomba
-//  parar fugir se estiver longe do inimigo
+// parar fugir se estiver longe do inimigo
 class Agent {
  private:
   static std::string my_agent_id;
@@ -161,16 +161,19 @@ void Agent::on_game_tick(int tick_nr, const json& game_state) {
         caminhoAStar.pop_back();
       }
     // verificando se o inimigo esta perto
+
     }else if (
         support.manhattanDistance(agent_node.coordinates, enemy_node.coordinates) > 3 &&
         support.manhattanDistance(agent_node.coordinates, enemy_node.coordinates) < 5) {
       // seta o caminho de fuga
       cout << "fuga" << endl;
+
       Coordinates seek_coordianates;
       seek_coordianates.x = agent_node.coordinates.x - (enemy_node.coordinates.x - agent_node.coordinates.x);
       seek_coordianates.y = agent_node.coordinates.y - (enemy_node.coordinates.y - agent_node.coordinates.y);
 
       seek_node.coordinates = support.getFreeCoordinates(seek_coordianates, maxX, maxY, entities);
+
       // std::cout << seek_coordianates.x << " : " << seek_coordianates.y << std::endl;
       // std::cout << seek_node.coordinates.x << " : " << seek_node.coordinates.y << std::endl;
       // std::cout << agent_node.coordinates.x << " : " << agent_node.coordinates.y << std::endl;
@@ -191,6 +194,7 @@ void Agent::on_game_tick(int tick_nr, const json& game_state) {
       action = "bomb";
       bombCoordenadas = agent_node.coordinates;
       bombCountDown = 8;
+
     }
 
     // calculando caminho A*
